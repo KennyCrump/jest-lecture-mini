@@ -1,4 +1,4 @@
-import {} from '../Logic/logic';
+import {toggle, addToCartLogic} from '../Logic/logic';
 
 const product = {
   id: 1,
@@ -8,9 +8,61 @@ const product = {
 };
 
 describe('Tests Toggle Show button', () => {
+  test('if given true return false', () => {
+    expect(toggle(true)).toBe(false)
+  })
+  test('if given false, return true', () => {
+    expect(toggle(false)).toBe(true)
+  })
+  test('if given an object, return false', ()=> {
+    expect(toggle({name: 'kenny'})).toBeFalsy()
+  })
+  test('if given a falsy value, return true', () => {
+    expect(toggle()).toBeTruthy()
+  })
 });
 
-describe('Can add item to cart', () => {});
+describe.only('Can add item to cart', () => {
+  let cart = []
+
+  beforeEach(()=> {
+    cart = []
+  })
+
+  test('can add item to array and has appropriate length', () => {
+    expect(addToCartLogic(cart, product)).toHaveLength(1)
+  })
+  test('does not return the same array passed in', () => {
+    let newCart = addToCartLogic(cart, product)
+    expect(newCart).not.toBe(cart)
+  })
+  test('product we passed in should not be modified', () => {
+    let newCart = addToCartLogic(cart, product)
+    expect(product).not.toHaveProperty('qty')
+  })
+  test('cart contains the item we added', () => {
+    let newCart = addToCartLogic(cart, product)[0]
+    expect(newCart).toHaveProperty('qty', 1)
+  })
+  test('item added in has a quantity property', () => {
+    let newCart = addToCartLogic(cart, product)[0]
+    expect(newCart).toHaveProperty('id', 1)
+  })
+  test('cart contains the item we added', () => {
+
+    let newCart = addToCartLogic(cart, product)
+    newCart = addToCartLogic(newCart, product)[0]
+    expect(newCart).toHaveProperty('qty', 2)
+  })
+  
+  test('does not modify the items of the original cart', () => {
+    let newCart = addToCartLogic(cart, product)
+    let newCart2 = addToCartLogic(newCart, product)
+    expect(newCart[0]).not.toHaveProperty('qty', 2)
+  })
+
+
+});
 
 describe('can calculate sub total', () => {
   // can get correct sub total
